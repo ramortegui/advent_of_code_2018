@@ -1,10 +1,10 @@
-File.stream!("./input_d1.txt")
+"./input_d1.txt"
+|> File.stream!
 |> Enum.reduce(0, fn(val, acc) ->
   num = val
-  |> String.trim_trailing()
-  |> String.to_integer()
+        |> String.trim_trailing()
+        |> String.to_integer()
   num + acc
-    end
-  )
+end
+)
 |> IO.puts
-
