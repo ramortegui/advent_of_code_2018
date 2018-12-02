@@ -1,8 +1,8 @@
 map_times = fn(string) ->
   string
-  |> String.split("",trim: true)
+  |> String.split("", trim: true)
   |> Enum.reduce(%{}, fn(letter, map) ->
-    case Map.get(map,letter) do
+    case Map.get(map, letter) do
       nil ->
         Map.put(map, letter, 1)
       rep ->
@@ -26,9 +26,9 @@ end
 
 "list.txt"
 |> File.stream!
-|> Enum.reduce(%{ 2 => 0, 3 => 0},fn(line, acc) ->
+|> Enum.reduce(%{ 2 => 0, 3 => 0}, fn(line, acc) ->
   res = map_times.(line)
-  %{2 => acc[2]+res[2],  3 => acc[3]+res[3]}
+  %{2 => acc[2]+res[2], 3 => acc[3]+res[3]}
 end)
 |> check_sum.()
 |> IO.inspect
