@@ -8,8 +8,8 @@
   case Map.get(map, num+acc) do
     nil -> { Map.put(map, num+acc, num+acc) ,num+acc}
     res ->
-      raise "Found in #{res}"
+      IO.puts "Found in #{res}"
+      System.halt(0)
   end
 end
 )
-|> IO.puts
