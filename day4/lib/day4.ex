@@ -89,8 +89,48 @@ defmodule Day4 do
 
   end
 
+  def record_structure_2(structure) when is_binary(structure) do
+    structure
+    |> String.trim()
+    |> String.split("\n")
+    |> Enum.reduce([],fn(data, acc) -> [Day4.get_data(data) | acc] end)
+    |> Enum.sort(fn(data1, data2) ->
+      {:ok, date1} = NaiveDateTime.from_iso8601(elem(data1,0))
+      {:ok, date2} = NaiveDateTime.from_iso8601(elem(data2,0))
+      NaiveDateTime.diff(date1, date2) < 0
+    end)
+    |> Enum.reduce({[],0}, fn({date, guard, action}, {list, new_guard} ) ->
+      if(guard == nil || guard == 0) do
+        guard = new_guard
+        {[{date, guard, action} | list], guard}
+      else
+        {[{date, guard, action} | list], guard}
+      end
+    end)
+    |> remove_guard()
+    |> Enum.reject(&(elem(&1, 2) == :start))
+    |> group_by_id_ranges(%{})
+    |> IO.inspect()
+    |> Enum.reduce(%{},fn(x, acc) ->
+      test = Enum.max_by(elem(x,1).range, fn(y) ->
+      elem(y,1)
+     end
+      )
+      Map.put(acc, elem(x,0), {elem(test,0), elem(test,1)})
+
+    end)
+    |> get_most_minute()
+  end
+
+  defp get_most_minute(structure) do
+    {guard, {min, _times}}= Enum.max_by(structure,fn(x) -> elem(x,1)|> elem(1) end)
+    guard * min
+  end
+
   defp get_best_minute({guard, structure}) do
     {minute, _qty} = Enum.max_by(structure.range, fn(x) -> elem(x,1) end)
+                     |> IO.inspect
+
     guard * minute
   end
 
@@ -105,7 +145,7 @@ defmodule Day4 do
       nil ->
         group_by_id_ranges(tail, Map.put(acc, guard,%{
           range: Enum.reduce(init.minute..init2.minute, %{}, fn(x,acc) ->
-            Map.put(acc, x, 1)
+            Map.update(acc, x,1,fn(y) -> y+1 end)
           end),
           count: (Enum.count(init.minute..init2.minute)-1)}))
       exists ->
