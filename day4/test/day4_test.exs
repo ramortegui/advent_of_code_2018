@@ -1,9 +1,16 @@
 defmodule Day4Test do
   use ExUnit.Case
 
-  test "" do
-    assert Day4.hello() == :world
+  doctest Day4
+
+  test "order data" do
+    input()
+    |> String.split("\n")
+    |> Enum.shuffle()
+    |> IO.inspect
+    assert 1 == 1
   end
+
 
   def input do
     """
