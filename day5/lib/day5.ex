@@ -26,7 +26,6 @@ defmodule Day5 do
     |> String.codepoints()
     |> react([])
     |> Enum.reverse()
-    |> IO.inspect
     |> Enum.join("")
   end
 
@@ -64,4 +63,29 @@ defmodule Day5 do
   defp do_react?(first, second) do
     String.upcase(first) == second or String.upcase(second) == first
   end
+
+  @doc """
+  Remove products and check minimun reaction
+
+  ## Examples
+
+      iex> Day5.shortest_polymer("dabAcCaCBAcCcaDA")
+      4
+  """
+  def shortest_polymer(data) do
+    shortest = react(data)
+               |> String.length()
+    Enum.reduce(97..122, shortest, fn(x, acc) ->
+      to_replace = <<x>> <> "|" <> String.upcase(<<x>>)
+      new_length = String.replace(data, ~r/#{to_replace}/, "")
+                   |> react()
+                   |> String.length()
+      if new_length < acc do
+        new_length
+      else
+        acc
+      end
+    end)
+  end
+
 end
